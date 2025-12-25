@@ -22,7 +22,10 @@ services:
         value: "False"
       - key: ALLOWED_HOSTS
         scope: RUN_AND_BUILD_TIME
-        value: "${APP_DOMAIN}"
+        value: ".ondigitalocean.app"
       - key: DJANGO_SETTINGS_MODULE
         scope: RUN_AND_BUILD_TIME
         value: fashion_site.settings
+      - key: DISABLE_COLLECTSTATIC
+        scope: RUN_AND_BUILD_TIME
+        value: "0"

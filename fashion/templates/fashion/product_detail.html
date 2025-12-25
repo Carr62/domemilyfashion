@@ -182,7 +182,7 @@
                 <a href="{% url 'product_detail' related.slug %}" class="block">
                     <!-- Product Image with Magnetic Effect -->
                     <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-[#1a1a1a] img-magnetic img-elegant">
-                        <img src="{{ related.image.url }}" 
+                        <img src="{{ related.get_image_display_url }}" 
                              alt="{{ related.name }}" 
                              class="absolute inset-0 w-full h-full object-cover">
                         

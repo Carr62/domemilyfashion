@@ -4,19 +4,25 @@ from django.conf import settings
 from rest_framework import generics
 from .models import Product, ContactMessage
 from .serializers import ProductSerializer, ContactMessageSerializer
-import cloudinary
-import cloudinary.uploader
 import os
 
-# Configure Cloudinary
-CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
-if CLOUDINARY_URL:
-    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+# Try to import cloudinary (may fail if not configured)
+try:
+    import cloudinary
+    import cloudinary.uploader
+    CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
+    if CLOUDINARY_URL:
+        cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+        CLOUDINARY_ENABLED = True
+    else:
+        CLOUDINARY_ENABLED = False
+except ImportError:
+    CLOUDINARY_ENABLED = False
 
 
 def upload_to_cloudinary(file):
     """Upload file to Cloudinary and return the URL."""
-    if not CLOUDINARY_URL:
+    if not CLOUDINARY_ENABLED:
         return None
     try:
         result = cloudinary.uploader.upload(file, folder="domemily/products")

@@ -336,7 +336,7 @@
         <div class="recent-uploads">
             {% for product in recent_products %}
             <div class="recent-card">
-                <img src="{{ product.get_image_display_url }}" alt="{{ product.name }}">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
                 <div class="p-4">
                     <h3 class="font-semibold text-brand-dark truncate">{{ product.name }}</h3>
                     <p class="text-gray-500 text-sm">{{ product.get_dress_type_display_safe|default:product.get_category_display }}</p>

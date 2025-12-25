@@ -1,8 +1,30 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
+from django.conf import settings
 from rest_framework import generics
 from .models import Product, ContactMessage
 from .serializers import ProductSerializer, ContactMessageSerializer
+import cloudinary
+import cloudinary.uploader
+import os
+
+# Configure Cloudinary
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
+if CLOUDINARY_URL:
+    cloudinary.config(cloudinary_url=CLOUDINARY_URL)
+
+
+def upload_to_cloudinary(file):
+    """Upload file to Cloudinary and return the URL."""
+    if not CLOUDINARY_URL:
+        return None
+    try:
+        result = cloudinary.uploader.upload(file, folder="domemily/products")
+        return result.get('secure_url')
+    except Exception as e:
+        print(f"Cloudinary upload error: {e}")
+        return None
+
 
 def home(request):
     # Get latest 8 products for the collection grid
@@ -84,20 +106,27 @@ def upload_dress(request):
         if errors:
             context['errors'] = errors
         else:
-            # Create the product
-            product = Product(
-                name=name,
-                category='dresses',
-                dress_type=dress_type,
-                description=description,
-                price=price,
-                image=image,
-                is_available=is_available,
-            )
-            product.save()
+            # Upload image to Cloudinary
+            image_url = upload_to_cloudinary(image)
             
-            messages.success(request, f'"{name}" has been uploaded successfully!')
-            return redirect('manage_dresses')
+            if not image_url:
+                errors.append('Failed to upload image. Please try again.')
+                context['errors'] = errors
+            else:
+                # Create the product with Cloudinary URL
+                product = Product(
+                    name=name,
+                    category='dresses',
+                    dress_type=dress_type,
+                    description=description,
+                    price=price,
+                    image_url=image_url,
+                    is_available=is_available,
+                )
+                product.save()
+                
+                messages.success(request, f'"{name}" has been uploaded successfully!')
+                return redirect('manage_dresses')
     
     return render(request, "fashion/upload_dress.html", context)
 
@@ -180,8 +209,11 @@ def edit_dress(request, product_id):
             product.price = price
             product.is_available = is_available
             
+            # Upload new image if provided
             if image:
-                product.image = image
+                image_url = upload_to_cloudinary(image)
+                if image_url:
+                    product.image_url = image_url
             
             product.save()
             context['success'] = True

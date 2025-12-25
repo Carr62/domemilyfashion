@@ -158,19 +158,22 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # WhiteNoise compression and caching
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # ======================
 # CLOUDINARY (Production Media Storage)
 # ======================
 CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 if CLOUDINARY_URL:
+    # Use Cloudinary for media storage
     CLOUDINARY_STORAGE = {
         'CLOUDINARY_URL': CLOUDINARY_URL,
     }
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    MEDIA_URL = '/media/'
+else:
+    # Local storage fallback
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # ======================

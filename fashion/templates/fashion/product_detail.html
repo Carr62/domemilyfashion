@@ -1,0 +1,249 @@
+{% extends 'fashion/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | DOMEMILY{% endblock %}
+
+{% block extra_css %}
+<style>
+    .zoom-container {
+        overflow: hidden;
+    }
+    
+    .zoom-container img {
+        transition: transform 0.5s ease;
+    }
+    
+    .zoom-container:hover img {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<section class="pt-28 pb-4 bg-brand-cream dark:bg-[#0d0d0d]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <nav class="flex items-center gap-2 text-sm">
+            <a href="{% url 'home' %}" class="text-gray-500 dark:text-gray-400 hover:text-brand-clay transition-colors">Home</a>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+            <a href="{% url 'home' %}#collection" class="text-gray-500 dark:text-gray-400 hover:text-brand-clay transition-colors">Collection</a>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+            <span class="text-brand-dark dark:text-white font-medium">{{ product.name }}</span>
+        </nav>
+    </div>
+</section>
+
+<!-- Product Detail -->
+<section class="py-12 bg-brand-cream dark:bg-[#0d0d0d]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <!-- Product Image with 3D Tilt -->
+            <div class="reveal">
+                <!-- Main Image -->
+                <div class="relative aspect-[3/4] rounded-3xl overflow-hidden bg-white dark:bg-[#1a1a1a] shadow-lg img-tilt-3d img-glow" style="transition: transform 0.3s ease-out;">
+                    <img src="{{ product.image.url }}" 
+                         alt="{{ product.name }}" 
+                         class="absolute inset-0 w-full h-full object-cover cursor-zoom-in">
+                    
+                    <!-- Elegant shine overlay -->
+                    <div class="absolute inset-0 img-shine pointer-events-none"></div>
+                    
+                    <!-- Category Badge -->
+                    <div class="absolute top-6 left-6 z-10">
+                        <span class="px-4 py-2 bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm text-xs font-semibold uppercase tracking-wider rounded-full shadow-sm dark:text-white">
+                            {{ product.get_dress_type_display_safe|default:product.get_category_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Availability Badge -->
+                    {% if product.is_available %}
+                    <div class="absolute top-6 right-6 z-10">
+                        <span class="px-4 py-2 bg-green-500 text-white text-xs font-semibold uppercase tracking-wider rounded-full shadow-sm">
+                            Available
+                        </span>
+                    </div>
+                    {% else %}
+                    <div class="absolute top-6 right-6 z-10">
+                        <span class="px-4 py-2 bg-gray-500 text-white text-xs font-semibold uppercase tracking-wider rounded-full shadow-sm">
+                            Sold Out
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="reveal delay-200 lg:sticky lg:top-32 lg:self-start">
+                <!-- Product Title -->
+                <div class="mb-6">
+                    <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">{{ product.get_dress_type_display_safe|default:product.get_category_display }}</span>
+                    <h1 class="font-serif text-4xl md:text-5xl font-semibold text-brand-dark dark:text-white mt-2">{{ product.name }}</h1>
+                </div>
+                
+                <!-- Price -->
+                <div class="mb-8">
+                    <span class="text-3xl font-semibold text-brand-clay">₵{{ product.price }}</span>
+                </div>
+                
+                <!-- Description -->
+                <div class="mb-10">
+                    <h3 class="font-semibold text-brand-dark dark:text-white mb-3">Description</h3>
+                    <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{{ product.description }}</p>
+                </div>
+                
+                <!-- Contact for Inquiry -->
+                <div class="bg-brand-gold/10 dark:bg-brand-gold/20 rounded-2xl p-6 mb-8">
+                    <h3 class="font-semibold text-brand-dark dark:text-white mb-2">Interested in this piece?</h3>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Contact us to inquire about availability, custom sizing, or to place an order.</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <a href="{% url 'contact' %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-dark dark:bg-white text-white dark:text-brand-dark font-semibold rounded-full hover:bg-brand-clay dark:hover:bg-brand-gold transition-colors">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                            <span>Contact Us</span>
+                        </a>
+                        <a href="https://wa.me/233000000000?text=Hi! I'm interested in {{ product.name }} (₵{{ product.price }})" 
+                           target="_blank"
+                           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white font-semibold rounded-full hover:bg-green-600 transition-colors">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Product Details -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-8 space-y-4">
+                    <h3 class="font-semibold text-brand-dark dark:text-white mb-4">What We Offer</h3>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-brand-gold/10 dark:bg-brand-gold/20 rounded-full flex items-center justify-center">
+                            <i data-lucide="scissors" class="w-5 h-5 text-brand-gold"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-brand-dark dark:text-white">Custom Tailoring</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Made to your exact measurements</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-brand-gold/10 dark:bg-brand-gold/20 rounded-full flex items-center justify-center">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-brand-gold"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-brand-dark dark:text-white">Quality Guaranteed</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Authentic African fabrics</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Share -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-8 mt-8">
+                    <div class="flex items-center gap-4">
+                        <span class="font-medium text-brand-dark dark:text-white">Share:</span>
+                        <div class="flex gap-2">
+                            <a href="#" class="w-10 h-10 bg-gray-100 dark:bg-[#1a1a1a] rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-brand-dark hover:text-white transition-colors">
+                                <i data-lucide="facebook" class="w-4 h-4"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gray-100 dark:bg-[#1a1a1a] rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-brand-dark hover:text-white transition-colors">
+                                <i data-lucide="twitter" class="w-4 h-4"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-gray-100 dark:bg-[#1a1a1a] rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-brand-dark hover:text-white transition-colors">
+                                <i data-lucide="instagram" class="w-4 h-4"></i>
+                            </a>
+                            <button onclick="copyLink()" class="w-10 h-10 bg-gray-100 dark:bg-[#1a1a1a] rounded-full flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-brand-dark hover:text-white transition-colors">
+                                <i data-lucide="link" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+{% if related_products %}
+<section class="py-24 bg-white dark:bg-[#111111]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+                <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">You May Also Like</span>
+                <h2 class="font-serif text-3xl md:text-4xl font-semibold dark:text-white mt-2">Similar Styles</h2>
+            </div>
+            <a href="{% url 'home' %}#collection" class="group inline-flex items-center gap-2 text-brand-clay font-medium hover:text-brand-dark dark:hover:text-brand-gold transition-colors">
+                <span>View All</span>
+                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for related in related_products %}
+            <article class="reveal-scale group">
+                <a href="{% url 'product_detail' related.slug %}" class="block">
+                    <!-- Product Image with Magnetic Effect -->
+                    <div class="relative aspect-[3/4] rounded-2xl overflow-hidden mb-4 bg-gray-100 dark:bg-[#1a1a1a] img-magnetic img-elegant">
+                        <img src="{{ related.image.url }}" 
+                             alt="{{ related.name }}" 
+                             class="absolute inset-0 w-full h-full object-cover">
+                        
+                        <!-- Shine effect -->
+                        <div class="absolute inset-0 img-shine pointer-events-none"></div>
+                        
+                        <!-- Overlay on Hover -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        
+                        <!-- Category Badge -->
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm text-xs font-medium uppercase tracking-wider rounded-full dark:text-white">{{ related.get_dress_type_display_safe|default:related.get_category_display }}</span>
+                        </div>
+                        
+                        <!-- View Button -->
+                        <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+                            <span class="block w-full py-3 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-sm text-center text-sm font-semibold rounded-xl dark:text-white">
+                                View Details
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="px-1">
+                        <h3 class="font-serif text-lg font-semibold group-hover:text-brand-clay transition-colors dark:text-white">{{ related.name }}</h3>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">{{ related.get_dress_type_display_safe|default:related.get_category_display }}</p>
+                        <p class="font-semibold text-brand-clay">₵{{ related.price }}</p>
+                    </div>
+                </a>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-16 bg-brand-cream dark:bg-[#0d0d0d]">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <div class="reveal">
+            <h2 class="font-serif text-3xl md:text-4xl font-semibold mb-4 dark:text-white">Looking for Something Custom?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-8">We create bespoke pieces tailored to your unique style and measurements. Let's bring your vision to life.</p>
+            <a href="{% url 'contact' %}" class="inline-flex items-center gap-3 px-8 py-4 bg-brand-dark dark:bg-white text-white dark:text-brand-dark font-semibold rounded-full hover:bg-brand-clay dark:hover:bg-brand-gold transition-colors btn-shine">
+                <span>Get in Touch</span>
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+    
+    // Copy link
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+    }
+</script>
+{% endblock %}

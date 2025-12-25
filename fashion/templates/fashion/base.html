@@ -1,0 +1,867 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DOMEMILY | African Luxury Fashion{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'brand': {
+                            'gold': '#C9A962',
+                            'gold-light': '#E8D5A3',
+                            'clay': '#8B4513',
+                            'clay-light': '#A0522D',
+                            'cream': '#FDF8F3',
+                            'dark': '#1A1A1A',
+                            'charcoal': '#2D2D2D',
+                        }
+                    },
+                    fontFamily: {
+                        'serif': ['Playfair Display', 'Georgia', 'serif'],
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-out forwards',
+                        'slide-up': 'slideUp 0.8s ease-out forwards',
+                        'slide-down': 'slideDown 0.3s ease-out forwards',
+                        'scale-in': 'scaleIn 0.5s ease-out forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Theme initialization (prevents flash) -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+    
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #FDF8F3; }
+        ::-webkit-scrollbar-thumb { background: #C9A962; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8B4513; }
+        
+        .dark ::-webkit-scrollbar-track { background: #1A1A1A; }
+        .dark ::-webkit-scrollbar-thumb { background: #C9A962; }
+        
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: relative;
+            width: 56px;
+            height: 28px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #87CEEB 0%, #FFD700 100%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            overflow: hidden;
+        }
+        
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .dark .theme-toggle::before {
+            opacity: 1;
+        }
+        
+        .theme-toggle-circle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #FFF;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .dark .theme-toggle-circle {
+            transform: translateX(28px);
+            background: #1a1a2e;
+            box-shadow: 0 2px 10px rgba(201, 169, 98, 0.3);
+        }
+        
+        .theme-toggle-circle .sun-icon {
+            color: #FFD700;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle-circle .moon-icon {
+            position: absolute;
+            color: #C9A962;
+            opacity: 0;
+            transform: rotate(-90deg);
+            transition: all 0.3s ease;
+        }
+        
+        .dark .theme-toggle-circle .sun-icon {
+            opacity: 0;
+            transform: rotate(90deg);
+        }
+        
+        .dark .theme-toggle-circle .moon-icon {
+            opacity: 1;
+            transform: rotate(0deg);
+        }
+        
+        /* Stars animation for dark mode toggle */
+        .theme-toggle .stars {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .dark .theme-toggle .stars {
+            opacity: 1;
+        }
+        
+        .theme-toggle .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 1.5s ease-in-out infinite;
+        }
+        
+        .theme-toggle .star:nth-child(1) { top: 6px; left: 8px; animation-delay: 0s; }
+        .theme-toggle .star:nth-child(2) { top: 12px; left: 16px; animation-delay: 0.3s; }
+        .theme-toggle .star:nth-child(3) { top: 8px; left: 24px; animation-delay: 0.6s; }
+        .theme-toggle .star:nth-child(4) { top: 18px; left: 12px; animation-delay: 0.9s; }
+        .theme-toggle .star:nth-child(5) { top: 20px; left: 22px; animation-delay: 1.2s; }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Animations */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .reveal-scale { opacity: 0; transform: scale(0.95); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reveal-scale.active { opacity: 1; transform: scale(1); }
+        
+        /* Stagger delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        .delay-400 { transition-delay: 0.4s; }
+        .delay-500 { transition-delay: 0.5s; }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #C9A962 0%, #8B4513 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Glass Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Hover Card Effect */
+        .card-hover {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Image Zoom Effect */
+        .img-zoom {
+            overflow: hidden;
+        }
+        .img-zoom img {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .img-zoom:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* ============================================
+           AESTHETIC IMAGE MOTION EFFECTS
+           ============================================ */
+        
+        /* 1. Ken Burns Effect - Slow cinematic zoom & pan */
+        .img-ken-burns {
+            overflow: hidden;
+        }
+        .img-ken-burns img {
+            animation: kenBurns 20s ease-in-out infinite alternate;
+            transform-origin: center center;
+        }
+        @keyframes kenBurns {
+            0% { transform: scale(1) translate(0, 0); }
+            25% { transform: scale(1.1) translate(-2%, -1%); }
+            50% { transform: scale(1.15) translate(1%, 2%); }
+            75% { transform: scale(1.1) translate(2%, -1%); }
+            100% { transform: scale(1.05) translate(-1%, 1%); }
+        }
+        
+        /* 2. Parallax Float - Subtle floating motion */
+        .img-float {
+            animation: imgFloat 6s ease-in-out infinite;
+        }
+        @keyframes imgFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(0.5deg); }
+            50% { transform: translateY(-15px) rotate(0deg); }
+            75% { transform: translateY(-8px) rotate(-0.5deg); }
+        }
+        
+        /* 3. Magnetic Hover - Image follows cursor slightly */
+        .img-magnetic {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 4. Reveal Shine - Sweeping light effect */
+        .img-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .img-shine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg);
+            animation: imgShine 4s ease-in-out infinite;
+        }
+        @keyframes imgShine {
+            0%, 100% { left: -100%; }
+            50%, 60% { left: 150%; }
+        }
+        
+        /* 5. 3D Tilt Effect on Hover */
+        .img-tilt {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.5s ease;
+        }
+        .img-tilt:hover {
+            transform: rotateY(-5deg) rotateX(5deg) scale(1.02);
+        }
+        
+        /* 6. Glitch Hover Effect */
+        .img-glitch {
+            position: relative;
+        }
+        .img-glitch:hover img {
+            animation: glitchImg 0.3s ease infinite;
+        }
+        @keyframes glitchImg {
+            0%, 100% { transform: translate(0); filter: hue-rotate(0deg); }
+            20% { transform: translate(-2px, 2px); filter: hue-rotate(10deg); }
+            40% { transform: translate(-2px, -2px); filter: hue-rotate(-10deg); }
+            60% { transform: translate(2px, 2px); filter: hue-rotate(5deg); }
+            80% { transform: translate(2px, -2px); filter: hue-rotate(-5deg); }
+        }
+        
+        /* 7. Pulse Glow Effect */
+        .img-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(201, 169, 98, 0.2), 0 0 40px rgba(201, 169, 98, 0.1);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(201, 169, 98, 0.4), 0 0 60px rgba(201, 169, 98, 0.2);
+            }
+        }
+        
+        /* 8. Morphing Border Radius */
+        .img-morph {
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morphBorder 8s ease-in-out infinite;
+            overflow: hidden;
+        }
+        @keyframes morphBorder {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+        }
+        
+        /* 9. Parallax Depth Layers */
+        .parallax-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .parallax-layer {
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* 10. Image Reveal on Scroll */
+        .img-reveal-left {
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .img-reveal-left.active {
+            clip-path: inset(0 0 0 0);
+        }
+        
+        .img-reveal-up {
+            clip-path: inset(100% 0 0 0);
+            transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .img-reveal-up.active {
+            clip-path: inset(0 0 0 0);
+        }
+        
+        /* 11. Elegant Scale with Overlay */
+        .img-elegant {
+            position: relative;
+            overflow: hidden;
+        }
+        .img-elegant::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(201, 169, 98, 0.1) 0%, transparent 50%, rgba(139, 69, 19, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 1;
+        }
+        .img-elegant:hover::before {
+            opacity: 1;
+        }
+        .img-elegant img {
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease;
+        }
+        .img-elegant:hover img {
+            transform: scale(1.08);
+            filter: brightness(1.05) contrast(1.05);
+        }
+        
+        /* 12. Soft Breathing Effect */
+        .img-breathe {
+            animation: breathe 4s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.02); filter: brightness(1.03); }
+        }
+        
+        /* 13. Rotation on Scroll */
+        .img-rotate-scroll {
+            transition: transform 0.3s ease-out;
+        }
+        
+        /* 14. Split Reveal Effect */
+        .img-split-reveal {
+            position: relative;
+            overflow: hidden;
+        }
+        .img-split-reveal::before,
+        .img-split-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: #FDF8F3;
+            z-index: 2;
+            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        .dark .img-split-reveal::before,
+        .dark .img-split-reveal::after {
+            background: #0d0d0d;
+        }
+        .img-split-reveal::before { left: 0; transform-origin: left; }
+        .img-split-reveal::after { right: 0; transform-origin: right; }
+        .img-split-reveal.active::before { transform: scaleX(0); }
+        .img-split-reveal.active::after { transform: scaleX(0); }
+        
+        /* Button Shine Effect */
+        .btn-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .btn-shine:hover::before {
+            left: 100%;
+        }
+        
+        /* Infinite Marquee */
+        .marquee-container {
+            overflow: hidden;
+        }
+        .marquee-content {
+            display: flex;
+            animation: marquee 25s linear infinite;
+        }
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* Decorative Line */
+        .line-gold {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #C9A962, #8B4513);
+        }
+        
+        /* Nav active state */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #C9A962, #8B4513);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-brand-cream dark:bg-[#0d0d0d] text-brand-dark dark:text-gray-100 font-sans antialiased overflow-x-hidden transition-colors duration-500">
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center py-5">
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="group flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-gold to-brand-clay flex items-center justify-center">
+                        <span class="font-serif text-white text-lg font-bold">D</span>
+                    </div>
+                    <span class="font-serif text-2xl font-semibold tracking-wide group-hover:text-brand-clay transition-colors">DOMEMILY</span>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-10">
+                    <a href="{% url 'home' %}" class="nav-link text-sm font-medium uppercase tracking-wider hover:text-brand-clay transition-colors {% block nav_home %}{% endblock %}">Home</a>
+                    <a href="{% url 'home' %}#collection" class="nav-link text-sm font-medium uppercase tracking-wider hover:text-brand-clay transition-colors">Collection</a>
+                    <a href="{% url 'about' %}" class="nav-link text-sm font-medium uppercase tracking-wider hover:text-brand-clay transition-colors {% block nav_about %}{% endblock %}">About</a>
+                    <a href="{% url 'contact' %}" class="nav-link text-sm font-medium uppercase tracking-wider hover:text-brand-clay transition-colors {% block nav_contact %}{% endblock %}">Contact</a>
+                </div>
+                
+                <!-- CTA & Theme Toggle & Mobile Toggle -->
+                <div class="flex items-center gap-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                        <div class="stars">
+                            <span class="star"></span>
+                            <span class="star"></span>
+                            <span class="star"></span>
+                            <span class="star"></span>
+                            <span class="star"></span>
+                        </div>
+                        <div class="theme-toggle-circle">
+                            <i data-lucide="sun" class="sun-icon w-4 h-4"></i>
+                            <i data-lucide="moon" class="moon-icon w-4 h-4"></i>
+                        </div>
+                    </button>
+                    
+                    <a href="{% url 'contact' %}" class="hidden sm:inline-flex items-center gap-2 px-6 py-2.5 bg-brand-dark dark:bg-brand-gold text-white dark:text-brand-dark text-sm font-medium rounded-full hover:bg-brand-clay dark:hover:bg-brand-gold-light transition-colors btn-shine">
+                        <span>Book Appointment</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden p-2 hover:bg-brand-gold/10 rounded-lg transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-80 h-full bg-white dark:bg-[#1a1a1a] shadow-2xl md:hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-10">
+                    <span class="font-serif text-xl font-semibold">Menu</span>
+                    <button id="mobile-menu-close" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <a href="{% url 'home' %}" class="text-lg font-medium hover:text-brand-clay transition-colors">Home</a>
+                    <a href="{% url 'home' %}#collection" class="text-lg font-medium hover:text-brand-clay transition-colors">Collection</a>
+                    <a href="{% url 'about' %}" class="text-lg font-medium hover:text-brand-clay transition-colors">About</a>
+                    <a href="{% url 'contact' %}" class="text-lg font-medium hover:text-brand-clay transition-colors">Contact</a>
+                    
+                    <!-- Mobile Theme Toggle -->
+                    <div class="flex items-center justify-between py-4 border-t border-gray-200 dark:border-gray-700">
+                        <span class="text-sm font-medium">Dark Mode</span>
+                        <button id="theme-toggle-mobile" class="theme-toggle" aria-label="Toggle theme">
+                            <div class="stars">
+                                <span class="star"></span>
+                                <span class="star"></span>
+                                <span class="star"></span>
+                                <span class="star"></span>
+                                <span class="star"></span>
+                            </div>
+                            <div class="theme-toggle-circle">
+                                <i data-lucide="sun" class="sun-icon w-4 h-4"></i>
+                                <i data-lucide="moon" class="moon-icon w-4 h-4"></i>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <a href="{% url 'contact' %}" class="flex items-center justify-center gap-2 w-full px-6 py-3 bg-brand-dark dark:bg-brand-gold text-white dark:text-brand-dark font-medium rounded-full hover:bg-brand-clay dark:hover:bg-brand-gold-light transition-colors">
+                            <span>Book Appointment</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-white pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Footer Top -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-white/10">
+                <!-- Brand -->
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-gold to-brand-clay flex items-center justify-center">
+                            <span class="font-serif text-white text-lg font-bold">D</span>
+                        </div>
+                        <span class="font-serif text-2xl font-semibold">DOMEMILY</span>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Elevating African luxury fashion with authentic craftsmanship and modern elegance since 2017.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold transition-colors">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold transition-colors">
+                            <i data-lucide="facebook" class="w-5 h-5"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-gold transition-colors">
+                            <i data-lucide="twitter" class="w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-serif text-lg font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="{% url 'home' %}" class="text-gray-400 hover:text-brand-gold transition-colors">Home</a></li>
+                        <li><a href="{% url 'home' %}#collection" class="text-gray-400 hover:text-brand-gold transition-colors">Collection</a></li>
+                        <li><a href="{% url 'about' %}" class="text-gray-400 hover:text-brand-gold transition-colors">About Us</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-gray-400 hover:text-brand-gold transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Categories -->
+                <div>
+                    <h4 class="font-serif text-lg font-semibold mb-6">Categories</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-brand-gold transition-colors">Dresses</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-brand-gold transition-colors">Tops</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-brand-gold transition-colors">Bottoms</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-brand-gold transition-colors">Accessories</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact -->
+                <div>
+                    <h4 class="font-serif text-lg font-semibold mb-6">Contact Us</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-brand-gold flex-shrink-0 mt-0.5"></i>
+                            <span class="text-gray-400">Sowutuom-Ofankor Rd,<br>Accra, Ghana</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-brand-gold flex-shrink-0"></i>
+                            <a href="mailto:domemilyfashion@gmail.com" class="text-gray-400 hover:text-brand-gold transition-colors">domemilyfashion@gmail.com</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-5 h-5 text-brand-gold flex-shrink-0"></i>
+                            <a href="tel:+233000000000" class="text-gray-400 hover:text-brand-gold transition-colors">+233 00 000 0000</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer Bottom -->
+            <div class="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">© 2025 Domemily Fashion. All rights reserved.</p>
+                <p class="text-gray-500 text-sm">Crafted with <span class="text-brand-gold">♥</span> in Accra, Ghana</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+        const html = document.documentElement;
+        
+        function toggleTheme() {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            // Re-initialize icons after theme change
+            lucide.createIcons();
+        }
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', toggleTheme);
+        }
+        
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const isDark = html.classList.contains('dark');
+            
+            if (currentScroll > 100) {
+                if (isDark) {
+                    navbar.classList.add('bg-[#1a1a1a]/95', 'backdrop-blur-lg', 'shadow-sm', 'shadow-brand-gold/5');
+                    navbar.classList.remove('bg-white/95');
+                } else {
+                    navbar.classList.add('bg-white/95', 'backdrop-blur-lg', 'shadow-sm');
+                    navbar.classList.remove('bg-[#1a1a1a]/95', 'shadow-brand-gold/5');
+                }
+            } else {
+                navbar.classList.remove('bg-white/95', 'bg-[#1a1a1a]/95', 'backdrop-blur-lg', 'shadow-sm', 'shadow-brand-gold/5');
+            }
+            
+            lastScroll = currentScroll;
+        });
+        
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+        
+        function openMobileMenu() {
+            mobileMenu.classList.add('open');
+            mobileOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            mobileOverlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+        
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        mobileOverlay.addEventListener('click', closeMobileMenu);
+        
+        // Reveal on scroll animation
+        const revealElements = document.querySelectorAll('.reveal, .reveal-scale');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+        
+        // Image reveal animations observer
+        const imgRevealElements = document.querySelectorAll('.img-reveal-left, .img-reveal-up, .img-split-reveal');
+        
+        const imgRevealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.2 });
+        
+        imgRevealElements.forEach(el => imgRevealObserver.observe(el));
+        
+        // Magnetic hover effect for images
+        document.querySelectorAll('.img-magnetic').forEach(img => {
+            img.addEventListener('mousemove', (e) => {
+                const rect = img.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                img.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px) scale(1.02)`;
+            });
+            
+            img.addEventListener('mouseleave', () => {
+                img.style.transform = 'translate(0, 0) scale(1)';
+            });
+        });
+        
+        // Parallax scroll effect for images
+        let ticking = false;
+        document.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.pageYOffset;
+                    
+                    // Parallax layers
+                    document.querySelectorAll('.parallax-layer').forEach(layer => {
+                        const speed = layer.dataset.speed || 0.5;
+                        const rect = layer.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            const offset = (rect.top - window.innerHeight / 2) * speed * 0.1;
+                            layer.style.transform = `translateY(${offset}px)`;
+                        }
+                    });
+                    
+                    // Rotate on scroll
+                    document.querySelectorAll('.img-rotate-scroll').forEach(img => {
+                        const rect = img.getBoundingClientRect();
+                        if (rect.top < window.innerHeight && rect.bottom > 0) {
+                            const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                            const rotation = (progress - 0.5) * 10;
+                            img.style.transform = `rotate(${rotation}deg)`;
+                        }
+                    });
+                    
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+        
+        // 3D Tilt effect with mouse tracking
+        document.querySelectorAll('.img-tilt-3d').forEach(container => {
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                const tiltX = (y - 0.5) * 20;
+                const tiltY = (x - 0.5) * -20;
+                container.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                container.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

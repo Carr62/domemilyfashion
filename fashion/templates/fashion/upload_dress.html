@@ -1,0 +1,429 @@
+{% extends 'fashion/base.html' %}
+{% load static %}
+
+{% block title %}Upload Dress | DOMEMILY Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-zone {
+        border: 2px dashed #C9A962;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .upload-zone:hover,
+    .upload-zone.dragover {
+        border-color: #8B4513;
+        background: rgba(201, 169, 98, 0.05);
+    }
+    
+    .upload-zone.has-file {
+        border-style: solid;
+        border-color: #28a745;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e5e5e5;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #C9A962;
+        box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+    }
+    
+    .form-input::placeholder {
+        color: #999;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #1A1A1A;
+    }
+    
+    .form-label span {
+        color: #dc3545;
+    }
+    
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+        padding-right: 44px;
+    }
+    
+    .dress-type-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+    }
+    
+    .dress-type-option {
+        position: relative;
+    }
+    
+    .dress-type-option input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .dress-type-option label {
+        display: block;
+        padding: 12px 16px;
+        border: 2px solid #e5e5e5;
+        border-radius: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 13px;
+        font-weight: 500;
+    }
+    
+    .dress-type-option input:checked + label {
+        border-color: #C9A962;
+        background: linear-gradient(135deg, #C9A962 0%, #8B4513 100%);
+        color: white;
+    }
+    
+    .dress-type-option label:hover {
+        border-color: #C9A962;
+    }
+    
+    .preview-image {
+        max-width: 100%;
+        max-height: 400px;
+        border-radius: 12px;
+        object-fit: contain;
+    }
+    
+    .recent-uploads {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+    
+    .recent-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .recent-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    
+    .recent-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="pt-28 pb-8 bg-brand-dark">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8 text-center text-white">
+        <div class="inline-flex items-center gap-2 px-4 py-2 border border-brand-gold/30 rounded-full mb-6">
+            <i data-lucide="upload" class="w-4 h-4 text-brand-gold"></i>
+            <span class="text-brand-gold-light text-sm font-medium uppercase tracking-wider">Admin Panel</span>
+        </div>
+        <h1 class="font-serif text-4xl md:text-5xl font-semibold mb-4">Upload New Dress</h1>
+        <p class="text-gray-400 max-w-xl mx-auto">Add new dresses to your collection. Fill in the details below and they'll appear on your website instantly.</p>
+    </div>
+</section>
+
+<!-- Upload Form Section -->
+<section class="py-16 bg-brand-cream">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <!-- Success Message -->
+        {% if success %}
+        <div class="mb-8 p-6 bg-green-50 border border-green-200 rounded-2xl">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="check" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-800">Dress Uploaded Successfully!</h4>
+                    <p class="text-green-600 text-sm">Your dress "{{ success }}" is now live on the website.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Error Messages -->
+        {% if errors %}
+        <div class="mb-8 p-6 bg-red-50 border border-red-200 rounded-2xl">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="x" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-red-800">Please fix the following errors:</h4>
+                    <ul class="text-red-600 text-sm mt-2 list-disc list-inside">
+                        {% for error in errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12">
+            <form method="POST" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left Column - Image Upload -->
+                    <div>
+                        <label class="form-label">Dress Image <span>*</span></label>
+                        <div class="upload-zone p-8 text-center" id="upload-zone">
+                            <input type="file" name="image" id="image-input" accept="image/*" class="hidden" required>
+                            <div id="upload-placeholder">
+                                <div class="w-16 h-16 mx-auto mb-4 bg-brand-gold/10 rounded-full flex items-center justify-center">
+                                    <i data-lucide="image-plus" class="w-8 h-8 text-brand-gold"></i>
+                                </div>
+                                <p class="text-gray-600 font-medium mb-1">Click to upload or drag & drop</p>
+                                <p class="text-gray-400 text-sm">PNG, JPG up to 10MB</p>
+                            </div>
+                            <div id="image-preview" class="hidden">
+                                <img src="" alt="Preview" class="preview-image mx-auto mb-4">
+                                <button type="button" id="remove-image" class="text-red-500 text-sm font-medium hover:text-red-700">
+                                    <i data-lucide="trash-2" class="w-4 h-4 inline mr-1"></i> Remove Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column - Details -->
+                    <div class="space-y-6">
+                        <!-- Dress Name -->
+                        <div>
+                            <label for="name" class="form-label">Dress Name <span>*</span></label>
+                            <input type="text" 
+                                   id="name" 
+                                   name="name" 
+                                   class="form-input" 
+                                   placeholder="e.g., Royal Kente Evening Gown"
+                                   value="{{ form_data.name }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Price -->
+                        <div>
+                            <label for="price" class="form-label">Price (₵) <span>*</span></label>
+                            <input type="number" 
+                                   id="price" 
+                                   name="price" 
+                                   class="form-input" 
+                                   placeholder="e.g., 1200"
+                                   step="0.01"
+                                   min="0"
+                                   value="{{ form_data.price }}"
+                                   required>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div>
+                            <label for="description" class="form-label">Description <span>*</span></label>
+                            <textarea id="description" 
+                                      name="description" 
+                                      class="form-input" 
+                                      rows="4"
+                                      placeholder="Describe the dress, fabric, and any special features..."
+                                      required>{{ form_data.description }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dress Type Selection -->
+                <div class="mt-8 pt-8 border-t border-gray-100">
+                    <label class="form-label mb-4">Dress Type <span>*</span></label>
+                    <div class="dress-type-grid">
+                        {% for value, label in dress_types %}
+                        {% if value %}
+                        <div class="dress-type-option">
+                            <input type="radio" 
+                                   name="dress_type" 
+                                   id="type_{{ value }}" 
+                                   value="{{ value }}"
+                                   {% if form_data.dress_type == value %}checked{% endif %}
+                                   required>
+                            <label for="type_{{ value }}">{{ label }}</label>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Availability Toggle -->
+                <div class="mt-8 pt-8 border-t border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <label class="form-label mb-1">Availability</label>
+                            <p class="text-gray-500 text-sm">Show this dress on the website?</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="is_available" class="sr-only peer" checked>
+                            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-gold"></div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="mt-10 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" 
+                            class="flex-1 inline-flex items-center justify-center gap-3 px-8 py-4 bg-brand-dark text-white font-semibold rounded-full hover:bg-brand-clay transition-colors btn-shine">
+                        <i data-lucide="upload" class="w-5 h-5"></i>
+                        <span>Upload Dress</span>
+                    </button>
+                    <a href="{% url 'upload_dress' %}" 
+                       class="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-gray-200 text-gray-600 font-medium rounded-full hover:border-gray-300 transition-colors">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                        <span>Reset Form</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span>View Website</span>
+            </a>
+            <span class="text-gray-300">|</span>
+            <a href="/admin/fashion/product/" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                <span>Django Admin</span>
+            </a>
+            <span class="text-gray-300">|</span>
+            <a href="{% url 'manage_dresses' %}" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="list" class="w-4 h-4"></i>
+                <span>Manage All Dresses</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Uploads -->
+{% if recent_products %}
+<section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="font-serif text-2xl font-semibold">Recently Added</h2>
+            <a href="{% url 'manage_dresses' %}" class="text-brand-clay hover:text-brand-dark transition-colors text-sm font-medium">
+                View All →
+            </a>
+        </div>
+        
+        <div class="recent-uploads">
+            {% for product in recent_products %}
+            <div class="recent-card">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <div class="p-4">
+                    <h3 class="font-semibold text-brand-dark truncate">{{ product.name }}</h3>
+                    <p class="text-gray-500 text-sm">{{ product.get_dress_type_display_safe|default:product.get_category_display }}</p>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="font-semibold text-brand-clay">₵{{ product.price }}</span>
+                        {% if product.is_available %}
+                        <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">Live</span>
+                        {% else %}
+                        <span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">Hidden</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        
+        const uploadZone = document.getElementById('upload-zone');
+        const imageInput = document.getElementById('image-input');
+        const placeholder = document.getElementById('upload-placeholder');
+        const preview = document.getElementById('image-preview');
+        const previewImg = preview.querySelector('img');
+        const removeBtn = document.getElementById('remove-image');
+        
+        // Click to upload
+        uploadZone.addEventListener('click', (e) => {
+            if (e.target !== removeBtn && !removeBtn.contains(e.target)) {
+                imageInput.click();
+            }
+        });
+        
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+        
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                imageInput.files = files;
+                showPreview(files[0]);
+            }
+        });
+        
+        // File input change
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                showPreview(e.target.files[0]);
+            }
+        });
+        
+        // Show preview
+        function showPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImg.src = e.target.result;
+                placeholder.classList.add('hidden');
+                preview.classList.remove('hidden');
+                uploadZone.classList.add('has-file');
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Remove image
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            imageInput.value = '';
+            placeholder.classList.remove('hidden');
+            preview.classList.add('hidden');
+            uploadZone.classList.remove('has-file');
+        });
+    });
+</script>
+{% endblock %}

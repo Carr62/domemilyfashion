@@ -1,0 +1,350 @@
+{% extends 'fashion/base.html' %}
+{% load static %}
+
+{% block title %}Manage Dresses | DOMEMILY Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .product-table th {
+        background: #f8f8f8;
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+        color: #1A1A1A;
+        border-bottom: 2px solid #e5e5e5;
+    }
+    
+    .product-table td {
+        padding: 16px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+    }
+    
+    .product-table tr:hover td {
+        background: #fafafa;
+    }
+    
+    .product-thumb {
+        width: 60px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .status-live {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .status-hidden {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+    
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    
+    .action-btn:hover {
+        background: #f0f0f0;
+    }
+    
+    .action-btn.delete:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    
+    .filter-btn {
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+    
+    .filter-btn.active {
+        background: #1A1A1A;
+        color: white;
+    }
+    
+    .filter-btn:not(.active) {
+        background: white;
+        border-color: #e5e5e5;
+    }
+    
+    .filter-btn:not(.active):hover {
+        border-color: #C9A962;
+    }
+    
+    .search-input {
+        padding: 12px 16px 12px 44px;
+        border: 2px solid #e5e5e5;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 300px;
+        transition: all 0.2s ease;
+    }
+    
+    .search-input:focus {
+        outline: none;
+        border-color: #C9A962;
+    }
+    
+    .pagination {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .page-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    
+    .page-btn.active {
+        background: #1A1A1A;
+        color: white;
+    }
+    
+    .page-btn:not(.active) {
+        background: white;
+        border: 1px solid #e5e5e5;
+    }
+    
+    .page-btn:not(.active):hover {
+        border-color: #C9A962;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<section class="pt-28 pb-8 bg-brand-dark">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="text-white">
+                <div class="inline-flex items-center gap-2 px-4 py-2 border border-brand-gold/30 rounded-full mb-4">
+                    <i data-lucide="layout-grid" class="w-4 h-4 text-brand-gold"></i>
+                    <span class="text-brand-gold-light text-sm font-medium uppercase tracking-wider">Inventory</span>
+                </div>
+                <h1 class="font-serif text-3xl md:text-4xl font-semibold">Manage Dresses</h1>
+                <p class="text-gray-400 mt-2">{{ products.count }} total dresses in your collection</p>
+            </div>
+            <a href="{% url 'upload_dress' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-gold text-brand-dark font-semibold rounded-full hover:bg-brand-gold-light transition-colors">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span>Add New Dress</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-12 bg-brand-cream min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        
+        <!-- Filters & Search -->
+        <div class="bg-white rounded-2xl shadow-sm p-6 mb-8">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'manage_dresses' %}" class="filter-btn {% if not current_filter %}active{% endif %}">
+                        All ({{ all_count }})
+                    </a>
+                    <a href="{% url 'manage_dresses' %}?filter=available" class="filter-btn {% if current_filter == 'available' %}active{% endif %}">
+                        <span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-2"></span>
+                        Live ({{ available_count }})
+                    </a>
+                    <a href="{% url 'manage_dresses' %}?filter=hidden" class="filter-btn {% if current_filter == 'hidden' %}active{% endif %}">
+                        <span class="w-2 h-2 bg-gray-400 rounded-full inline-block mr-2"></span>
+                        Hidden ({{ hidden_count }})
+                    </a>
+                </div>
+                
+                <!-- Search -->
+                <form method="GET" class="relative">
+                    {% if current_filter %}
+                    <input type="hidden" name="filter" value="{{ current_filter }}">
+                    {% endif %}
+                    <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" 
+                           name="search" 
+                           value="{{ search_query }}"
+                           placeholder="Search dresses..." 
+                           class="search-input">
+                </form>
+            </div>
+        </div>
+        
+        <!-- Success/Delete Messages -->
+        {% if messages %}
+        {% for message in messages %}
+        <div class="mb-6 p-4 rounded-xl {% if message.tags == 'success' %}bg-green-50 border border-green-200 text-green-800{% else %}bg-red-50 border border-red-200 text-red-800{% endif %}">
+            <div class="flex items-center gap-3">
+                {% if message.tags == 'success' %}
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                {% else %}
+                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <!-- Products Table -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            {% if products %}
+            <div class="overflow-x-auto">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 80px;">Image</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Date Added</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                            </td>
+                            <td>
+                                <a href="{% url 'product_detail' product.slug %}" class="font-semibold text-brand-dark hover:text-brand-clay transition-colors" target="_blank">
+                                    {{ product.name }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="text-gray-600">{{ product.get_dress_type_display_safe|default:product.get_category_display }}</span>
+                            </td>
+                            <td>
+                                <span class="font-semibold text-brand-clay">₵{{ product.price }}</span>
+                            </td>
+                            <td>
+                                {% if product.is_available %}
+                                <span class="status-badge status-live">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    Live
+                                </span>
+                                {% else %}
+                                <span class="status-badge status-hidden">
+                                    <span class="w-2 h-2 bg-gray-400 rounded-full"></span>
+                                    Hidden
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="text-gray-500 text-sm">{{ product.created_at|date:"M d, Y" }}</span>
+                            </td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <a href="{% url 'product_detail' product.slug %}" class="action-btn" title="View" target="_blank">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </a>
+                                    <a href="{% url 'edit_dress' product.id %}" class="action-btn" title="Edit">
+                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                    </a>
+                                    <form method="POST" action="{% url 'toggle_dress' product.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn" title="{% if product.is_available %}Hide{% else %}Show{% endif %}">
+                                            {% if product.is_available %}
+                                            <i data-lucide="eye-off" class="w-4 h-4"></i>
+                                            {% else %}
+                                            <i data-lucide="eye" class="w-4 h-4 text-green-600"></i>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{% url 'delete_dress' product.id %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this dress?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn delete" title="Delete">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-16 text-center">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="package" class="w-10 h-10 text-gray-400"></i>
+                </div>
+                <h3 class="font-serif text-xl font-semibold text-gray-800 mb-2">No Dresses Found</h3>
+                <p class="text-gray-500 mb-6">
+                    {% if search_query %}
+                    No results for "{{ search_query }}". Try a different search.
+                    {% else %}
+                    Start by adding your first dress to the collection.
+                    {% endif %}
+                </p>
+                <a href="{% url 'upload_dress' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-dark text-white font-medium rounded-full hover:bg-brand-clay transition-colors">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span>Add New Dress</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="mt-8 flex flex-wrap justify-center gap-4">
+            <a href="{% url 'home' %}" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="home" class="w-4 h-4"></i>
+                <span>View Website</span>
+            </a>
+            <span class="text-gray-300">|</span>
+            <a href="/admin/fashion/product/" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+                <span>Django Admin</span>
+            </a>
+            <span class="text-gray-300">|</span>
+            <a href="{% url 'upload_dress' %}" class="inline-flex items-center gap-2 text-gray-600 hover:text-brand-clay transition-colors">
+                <i data-lucide="upload" class="w-4 h-4"></i>
+                <span>Upload New</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

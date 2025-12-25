@@ -1,0 +1,328 @@
+{% extends 'fashion/base.html' %}
+{% load static %}
+
+{% block title %}About Us | DOMEMILY{% endblock %}
+{% block nav_about %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+    .parallax-bg {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+    @media (max-width: 768px) {
+        .parallax-bg {
+            background-attachment: scroll;
+        }
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom, #C9A962, #8B4513);
+    }
+    
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 0;
+        width: 14px;
+        height: 14px;
+        background: #C9A962;
+        border-radius: 50%;
+        border: 3px solid #FDF8F3;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-brand-dark">
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/90 via-brand-dark/70 to-brand-dark"></div>
+        <!-- Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"50\" cy=\"50\" r=\"1\" fill=\"%23C9A962\"/></svg>');"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 pt-32 pb-20 text-center text-white">
+        <!-- Badge -->
+        <div class="reveal inline-flex items-center gap-2 px-4 py-2 border border-brand-gold/30 rounded-full mb-8">
+            <i data-lucide="sparkles" class="w-4 h-4 text-brand-gold"></i>
+            <span class="text-brand-gold-light text-sm font-medium uppercase tracking-wider">Our Story</span>
+        </div>
+        
+        <!-- Heading -->
+        <h1 class="reveal delay-100 font-serif text-5xl md:text-7xl lg:text-8xl font-semibold leading-tight mb-8">
+            Crafting <span class="gradient-text italic">Excellence</span>
+            <span class="block mt-2">Since 2017</span>
+        </h1>
+        
+        <!-- Subheading -->
+        <p class="reveal delay-200 text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            From humble beginnings in Accra to dressing clients worldwide, our journey is woven with passion, culture, and unwavering commitment to quality.
+        </p>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <a href="#story" class="flex flex-col items-center gap-2 text-gray-400 hover:text-brand-gold transition-colors">
+            <span class="text-xs uppercase tracking-widest">Discover</span>
+            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+        </a>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section id="story" class="py-24 bg-brand-cream dark:bg-[#0d0d0d]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Content -->
+            <div class="reveal">
+                <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">The Beginning</span>
+                <h2 class="font-serif text-4xl md:text-5xl font-semibold mt-2 mb-6">Where It All Started</h2>
+                <div class="line-gold mb-8"></div>
+                
+                <div class="space-y-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                    <p>
+                        Established in 2017 in the heart of Accra, Ghana, Domemily was born from a vision to elevate African fashion to the global luxury stage. What started as a small tailoring shop with a single sewing machine has blossomed into a celebrated fashion house.
+                    </p>
+                    <p>
+                        We believe that true luxury lies in the details—the precision of every stitch, the authenticity of each fabric, and the confidence our creations instill in every wearer. Our name, "Domemily," reflects our commitment to creating garments that feel like home while making you stand out.
+                    </p>
+                    <p>
+                        Today, we continue to honor our African heritage while embracing contemporary design, creating pieces that tell stories and celebrate individuality.
+                    </p>
+                </div>
+                
+                <div class="mt-10 flex flex-wrap gap-6">
+                    <div class="text-center">
+                        <span class="block font-serif text-4xl font-semibold gradient-text">2017</span>
+                        <span class="text-sm text-gray-500 uppercase tracking-wider">Founded</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-serif text-4xl font-semibold gradient-text">100+</span>
+                        <span class="text-sm text-gray-500 uppercase tracking-wider">Happy Clients</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image with Ken Burns Effect -->
+            <div class="reveal delay-200 relative">
+                <div class="absolute -top-6 -left-6 w-full h-full border-2 border-brand-gold rounded-2xl"></div>
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl img-ken-burns img-glow">
+                    <div class="aspect-[4/5] bg-gray-100">
+                        <img src="/media/products/5ac94295cbf2836f051b3e111287d85e.jpg" 
+                             alt="Beautiful Ankara fabric design" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <!-- Elegant overlay shimmer -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-brand-gold/10 via-transparent to-brand-clay/10 opacity-0 hover:opacity-100 transition-opacity duration-700"></div>
+                </div>
+                <!-- Caption with float effect -->
+                <div class="absolute -bottom-4 -right-4 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-lg p-4 max-w-[200px] img-float">
+                    <p class="font-serif text-lg text-brand-dark dark:text-white">Crafted with Love</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Every Stitch Tells a Story</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-24 bg-white dark:bg-[#111111]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="reveal text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">What Drives Us</span>
+            <h2 class="font-serif text-4xl md:text-5xl font-semibold mt-2 mb-4">Our Core Values</h2>
+            <p class="text-gray-600 dark:text-gray-400">The principles that guide every stitch, every design, and every interaction.</p>
+        </div>
+        
+        <!-- Values Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="reveal delay-100 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="gem" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Excellence</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    We pursue perfection in every detail. From fabric selection to the final stitch, excellence is our standard.
+                </p>
+            </div>
+            
+            <div class="reveal delay-200 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="heart" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Authenticity</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    We honor our African roots, using genuine fabrics and traditional techniques that tell our cultural story.
+                </p>
+            </div>
+            
+            <div class="reveal delay-300 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="users" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Customer Focus</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    Your vision is our priority. We listen, collaborate, and create garments that exceed your expectations.
+                </p>
+            </div>
+            
+            <div class="reveal delay-400 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="leaf" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Sustainability</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    We create timeless pieces meant to last, reducing fashion waste while supporting local artisans.
+                </p>
+            </div>
+            
+            <div class="reveal delay-500 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="lightbulb" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Innovation</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    While honoring tradition, we embrace modern techniques and designs to keep our creations fresh and relevant.
+                </p>
+            </div>
+            
+            <div class="reveal delay-600 group p-8 bg-brand-cream dark:bg-[#1a1a1a] rounded-2xl hover:bg-brand-dark hover:text-white transition-all duration-500">
+                <div class="w-16 h-16 mb-6 bg-brand-gold/20 group-hover:bg-brand-gold rounded-2xl flex items-center justify-center transition-colors">
+                    <i data-lucide="award" class="w-8 h-8 text-brand-gold group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="font-serif text-2xl font-semibold mb-4">Integrity</h3>
+                <p class="text-gray-600 dark:text-gray-400 group-hover:text-gray-300 transition-colors">
+                    We operate with transparency and honesty, building lasting relationships based on trust and respect.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Statement -->
+<section class="py-24 bg-brand-dark text-white overflow-hidden relative">
+    <!-- Decorative Elements -->
+    <div class="absolute top-1/4 left-0 w-64 h-64 bg-brand-gold/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-0 w-96 h-96 bg-brand-clay/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-5xl mx-auto px-6 lg:px-8 text-center relative z-10">
+        <div class="reveal">
+            <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">Our Mission</span>
+            <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl font-semibold mt-4 mb-8 leading-tight">
+                "To celebrate African heritage through luxury fashion, creating garments that empower individuals to express their unique identity with confidence and elegance."
+            </h2>
+            <div class="line-gold mx-auto"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Process Section -->
+<section class="py-24 bg-brand-cream dark:bg-[#0d0d0d]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="reveal text-center max-w-3xl mx-auto mb-16">
+            <span class="text-brand-gold text-sm font-semibold uppercase tracking-wider">How We Work</span>
+            <h2 class="font-serif text-4xl md:text-5xl font-semibold mt-2 mb-4">Our Creative Process</h2>
+            <p class="text-gray-600 dark:text-gray-400">From your vision to the finished garment, here's how we bring your dreams to life.</p>
+        </div>
+        
+        <!-- Process Steps -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="reveal delay-100 relative text-center">
+                <div class="w-20 h-20 mx-auto mb-6 bg-brand-gold rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold shadow-lg">
+                    1
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-3">Consultation</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">We discuss your vision, preferences, and requirements to understand exactly what you want.</p>
+                <!-- Arrow -->
+                <div class="hidden lg:block absolute top-10 right-0 transform translate-x-1/2">
+                    <i data-lucide="arrow-right" class="w-8 h-8 text-brand-gold/30"></i>
+                </div>
+            </div>
+            
+            <div class="reveal delay-200 relative text-center">
+                <div class="w-20 h-20 mx-auto mb-6 bg-brand-gold rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold shadow-lg">
+                    2
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-3">Design</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Our designers create sketches and select fabrics that perfectly match your style.</p>
+                <!-- Arrow -->
+                <div class="hidden lg:block absolute top-10 right-0 transform translate-x-1/2">
+                    <i data-lucide="arrow-right" class="w-8 h-8 text-brand-gold/30"></i>
+                </div>
+            </div>
+            
+            <div class="reveal delay-300 relative text-center">
+                <div class="w-20 h-20 mx-auto mb-6 bg-brand-gold rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold shadow-lg">
+                    3
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-3">Crafting</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Our skilled artisans bring the design to life with meticulous attention to detail.</p>
+                <!-- Arrow -->
+                <div class="hidden lg:block absolute top-10 right-0 transform translate-x-1/2">
+                    <i data-lucide="arrow-right" class="w-8 h-8 text-brand-gold/30"></i>
+                </div>
+            </div>
+            
+            <div class="reveal delay-400 text-center">
+                <div class="w-20 h-20 mx-auto mb-6 bg-brand-gold rounded-full flex items-center justify-center text-white font-serif text-2xl font-bold shadow-lg">
+                    4
+                </div>
+                <h3 class="font-serif text-xl font-semibold mb-3">Delivery</h3>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Your finished piece is carefully packaged and delivered to your doorstep.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-24 bg-white dark:bg-[#111111]">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="reveal relative bg-gradient-to-br from-brand-gold to-brand-clay rounded-3xl p-12 md:p-20 text-center text-white overflow-hidden">
+            <!-- Decorative Elements -->
+            <div class="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute bottom-0 right-0 w-60 h-60 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
+            <div class="absolute top-1/2 left-1/4 w-20 h-20 bg-white/5 rounded-full"></div>
+            
+            <div class="relative z-10">
+                <i data-lucide="mail" class="w-16 h-16 mx-auto mb-6 opacity-80"></i>
+                <h2 class="font-serif text-3xl md:text-5xl font-semibold mb-6">Let's Create Something Beautiful</h2>
+                <p class="text-white/90 text-lg max-w-2xl mx-auto mb-10">
+                    Ready to experience the Domemily difference? Get in touch and let us bring your fashion vision to life.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'contact' %}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-dark font-semibold rounded-full hover:bg-brand-cream transition-colors btn-shine">
+                        <span>Contact Us</span>
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                    <a href="{% url 'home' %}#collection" class="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-brand-dark transition-colors">
+                        <span>View Collection</span>
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

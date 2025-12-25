@@ -1,0 +1,28 @@
+name: domemily-fashion
+services:
+  - name: web
+    github:
+      repo: Dominic62q/domemily
+      branch: master
+      deploy_on_push: true
+    build_command: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    run_command: gunicorn fashion_site.wsgi --log-file -
+    environment_slug: python
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    envs:
+      - key: SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: DEBUG
+        scope: RUN_AND_BUILD_TIME
+        value: "False"
+      - key: ALLOWED_HOSTS
+        scope: RUN_AND_BUILD_TIME
+        value: "${APP_DOMAIN}"
+      - key: DJANGO_SETTINGS_MODULE
+        scope: RUN_AND_BUILD_TIME
+        value: fashion_site.settings

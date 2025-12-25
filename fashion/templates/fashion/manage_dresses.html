@@ -239,7 +239,7 @@
                         {% for product in products %}
                         <tr>
                             <td>
-                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-thumb">
+                                <img src="{{ product.get_image_display_url }}" alt="{{ product.name }}" class="product-thumb">
                             </td>
                             <td>
                                 <a href="{% url 'product_detail' product.slug %}" class="font-semibold text-brand-dark hover:text-brand-clay transition-colors" target="_blank">

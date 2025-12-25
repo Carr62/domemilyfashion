@@ -41,7 +41,7 @@
             <div class="reveal">
                 <!-- Main Image -->
                 <div class="relative aspect-[3/4] rounded-3xl overflow-hidden bg-white dark:bg-[#1a1a1a] shadow-lg img-tilt-3d img-glow" style="transition: transform 0.3s ease-out;">
-                    <img src="{{ product.image.url }}" 
+                    <img src="{{ product.get_image_display_url }}" 
                          alt="{{ product.name }}" 
                          class="absolute inset-0 w-full h-full object-cover cursor-zoom-in">
                     

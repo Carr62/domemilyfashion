@@ -44,9 +44,18 @@ class Product(models.Model):
     dress_type = models.CharField(max_length=50, choices=DRESS_TYPE_CHOICES, blank=True, default='')
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    image = models.ImageField(upload_to="products/")
+    image = models.ImageField(upload_to="products/", blank=True, null=True)  # Keep original field
+    image_url = models.URLField(max_length=500, blank=True, null=True)  # Cloudinary URL
     is_available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    def get_image_display_url(self):
+        """Return Cloudinary URL if available, otherwise local image URL."""
+        if self.image_url:
+            return self.image_url
+        elif self.image:
+            return self.image.url
+        return ''
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -96,9 +96,8 @@ def upload_dress(request):
             )
             product.save()
             
-            context['success'] = name
-            context['form_data'] = {}
-            context['recent_products'] = Product.objects.filter(category='dresses').order_by('-created_at')[:4]
+            messages.success(request, f'"{name}" has been uploaded successfully!')
+            return redirect('manage_dresses')
     
     return render(request, "fashion/upload_dress.html", context)
 

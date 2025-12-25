@@ -1,5 +1,4 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from rest_framework import generics
 from .models import Product, ContactMessage
@@ -36,7 +35,6 @@ def product_detail(request, slug):
 
 # --- DRESS UPLOAD & MANAGEMENT VIEWS ---
 
-@login_required
 def upload_dress(request):
     """View for uploading new dresses."""
     context = {
@@ -105,7 +103,6 @@ def upload_dress(request):
     return render(request, "fashion/upload_dress.html", context)
 
 
-@login_required
 def manage_dresses(request):
     """View for managing all dresses."""
     products = Product.objects.filter(category='dresses').order_by('-created_at')
@@ -137,7 +134,6 @@ def manage_dresses(request):
     return render(request, "fashion/manage_dresses.html", context)
 
 
-@login_required
 def edit_dress(request, product_id):
     """View for editing a dress."""
     product = get_object_or_404(Product, id=product_id, category='dresses')
@@ -195,7 +191,6 @@ def edit_dress(request, product_id):
     return render(request, "fashion/edit_dress.html", context)
 
 
-@login_required
 def toggle_dress(request, product_id):
     """Toggle dress availability."""
     if request.method == 'POST':
@@ -209,7 +204,6 @@ def toggle_dress(request, product_id):
     return redirect('manage_dresses')
 
 
-@login_required
 def delete_dress(request, product_id):
     """Delete a dress."""
     if request.method == 'POST':
